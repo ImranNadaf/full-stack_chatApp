@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: backend-deployment
   namespace: chat-app
 spec:
   replicas: 1
@@ -14,27 +14,55 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: iemafzal/backend:v1
+      - name: chatapp-backend
+        image: imrannadaf/chatapp-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5001
         env:
-        - name: MONGODB_URI
-          value: "mongodb://root:admin@mongodb:27017/chatApp?authSource=admin"
-        - name: PORT
-          value: "5001"
-        - name: NODE_ENV
-          value: "production"
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: backend-secrets
-              key: jwt-secret
+          # Node environment
+          - name: NODE_ENV
+            value: "production"
+
+          # Prevent backend from trying to serve React files
+          - name: SERVE_FRONTEND
+            value: "false"
+
+          # MongoDB connection
+          - name: MONGODB_URI
+            value: "mongodb://root:root@mongodb:27017"
+
+          # Server port
+          - name: PORT
+            value: "5001"
+
+          # JWT secret (fetched from K8s secret)
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: chatapp-secrets
+                key: jwt
+
+        # Optional: add resource limits if needed
         resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
           requests:
             memory: "256Mi"
             cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: chat-app
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  type: ClusterIP

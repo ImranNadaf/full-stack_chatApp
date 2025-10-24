@@ -1,243 +1,220 @@
-[![Fork Button](https://img.shields.io/github/forks/iemafzalhassan/full-stack_chatApp?style=social)](https://github.com/iemafzalhassan/full-stack_chatApp/fork)
+# 💬 Full Stack Real-Time Chat App (Kubernetes + Docker + Minikube)
 
+[![Fork Button](https://img.shields.io/github/forks/imrannadaf/full-stack_chatApp?style=social)](https://github.com/imrannadaf/full-stack_chatApp/fork)
 
-# Real-Time Chat Application
+A fully containerized, real-time chat application powered by **Node.js**, **React**, **MongoDB**, **Socket.io**, and deployed with **Kubernetes (Minikube)**.
 
+---
 
-Welcome to the **Full Stack Realtime Chat App** project, where we're building a scalable and secure real-time chat experience using the latest technologies. Whether you're a seasoned developer or a beginner, we invite you to contribute and be a part of this exciting journey!
+## 🧩 Table of Contents
 
-## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Setup Instructions](#setup-instructions)
+- [Kubernetes Deployment](#kubernetes-deployment)
+- [Accessing the Application](#accessing-the-application)
+- [Troubleshooting](#troubleshooting)
+- [Future Plans](#future-plans)
+- [License](#license)
 
+---
 
-* [Introduction](#introduction)
-* [Features](#features)
-* [Tech Stack](#tech-stack)
-* [Getting Started](#getting-started)
-* [Building the Backend](#building-the-backend)
-* [Running the Application](#running-the-application)
-* [Contributing](#contributing)
-* [Future Plans](#future-plans)
-* [License](#license)
+## 🚀 Overview
 
-## 📝 Introduction
+This project is a **real-time chat app** with user authentication, socket-based messaging, and a modern frontend interface.  
+The stack is fully containerized and orchestrated using **Kubernetes** (via Minikube).
 
-This project aims to provide a real-time chat experience that's both scalable and secure. With a focus on modern technologies, we're building an application that's easy to use and maintain.
+---
 
 ## ✨ Features
 
+- 🔐 **JWT Authentication**
+- 💬 **Real-time Messaging** using Socket.io
+- 👤 **User Profile Management**
+- 🌐 **Frontend-Backend Integration via Kubernetes Services**
+- 📦 **Dockerized Microservices**
+- 🧠 **State Management** with Zustand
+- 🎨 **Modern UI** using React + TailwindCSS + DaisyUI
 
-* **Real-time Messaging**: Send and receive messages instantly using Socket.io 
-* **User Authentication & Authorization**: Securely manage user access with JWT 
-* **Scalable & Secure Architecture**: Built to handle large volumes of traffic and data 
-* **Modern UI Design**: A user-friendly interface crafted with React and TailwindCSS 
-* **Profile Management**: Users can upload and update their profile pictures 
-* **Online Status**: View real-time online/offline status of users 
+---
 
+## ⚙️ Tech Stack
 
-## 🛠️ Tech Stack
+| Layer | Technology |
+|--------|-------------|
+| **Frontend** | React, TailwindCSS, DaisyUI |
+| **Backend** | Node.js, Express.js, Socket.io |
+| **Database** | MongoDB |
+| **Authentication** | JWT |
+| **Containerization** | Docker |
+| **Orchestration** | Kubernetes (Minikube) |
+| **Web Server** | NGINX |
 
+---
 
-* **Backend:** Node.js, Express, MongoDB, Socket.io
-* **Frontend:** React, TailwindCSS
-* **Containerization:** Docker
-* **Orchestration:** Kubernetes (planned)
-* **Web Server:** Nginx
-* **State Management:** Zustand
-* **Authentication:** JWT
-* **Styling Components:** DaisyUI
+## 🏗️ Architecture Overview
 
-
-### 🔧 Prerequisites
-
-
-* **[Node.js](https://nodejs.org/)** (v14 or higher)
-* **[Docker](https://www.docker.com/get-started)** (for containerizing the app)
-* **[Git](https://git-scm.com/downloads)** (to clone the repository)
-
-
-### 📝 Environment Configuration
-
-Create a `.env` file in the root directory with the following configuration:
-
-```env
-# Database Configuration
-MONGODB_URI=mongodb://root:admin@mongo:27017/chatApp?authSource=admin&retryWrites=true&w=majority
-
-# JWT Configuration
-JWT_SECRET=your_jwt_secret_key
-
-# Server Configuration
-PORT=5001
-NODE_ENV=production
+```
+                        ┌───────────────────────┐
+                        │     Frontend Pod      │
+                        │  (React + Nginx)      │
+                        └─────────┬─────────────┘
+                                  │
+                            (ClusterIP:80)
+                                  │
+        ┌──────────────────────────────────────────────┐
+        │               Ingress Controller             │
+        │        (Optional: via chatapp.local)         │
+        └──────────────────────────────────────────────┘
+                                  │
+                            (ClusterIP:5001)
+                                  │
+                        ┌───────────────────────┐
+                        │     Backend Pod       │
+                        │ (Node.js + Express)   │
+                        └─────────┬─────────────┘
+                                  │
+                            (ClusterIP:27017)
+                                  │
+                        ┌───────────────────────┐
+                        │     MongoDB Pod       │
+                        └───────────────────────┘
 ```
 
-> **Note:** 
-> - Replace `your_jwt_secret_key` with a strong secret key
-> - For local development without Docker, change `MONGODB_URI` to `mongodb://localhost:27017/chatApp`
-> - You can use command ```echo "Text what you want" | base64
+---
 
-### Clone the Repository
+## 🧰 Setup Instructions
 
-```bash
-git clone https://github.com/iemafzalhassan/full-stack_chatApp.git
-```
-
-🏗️ Build and Run the Application
-
-Follow these steps to build and run the application:
-
-1. Build & Run the Containers:
+### 1️⃣ Clone the Repository
 
 ```bash
+git clone https://github.com/imrannadaf/full-stack_chatApp.git
 cd full-stack_chatApp
 ```
-```bash
-docker-compose up -d --build
-```
-
-2. Access the application in your browser:
-
-```
-http://localhost
-```
----
-
-## 🛠️ Getting Started
-
-Follow these simple steps to get the project up and running on your local Host using docker.
-
-```bash
-git clone https://github.com/iemafzalhassan/full-stack_chatApp.git
-```
-
-```bash
-cd full-stack_chatApp
-```
-## Create a Docker network:
-
-```bash
-docker network create full-stack
-```
-
-## 🛠️ Building the Frontend
-
-```bash
-cd frontend
-```
-
-```bash
-docker build -t full-stack_frontend .
-```
-
-### Run the Frontend container:
-
-```bash
-docker run -d --network=full-stack  -p 5173:5173 --name frontend full-stack_frontend:latest
-```
-#### The frontend will now be accessible on port 5173.
-
-
-## Run the MongoDB Container:
-
-```bash
-docker run -d -p 27017:27017 --name mongo mongo:latest
-```
----
-
-## 🛠️ Building the Backend
-
-```bash
-cd backend
-```
-
-### Build the Backend image:
-
-```bash
-docker build -t full-stack_backend .
-```
-
-### Run the Backend container:
-
-```bash
-docker run -d --network=full-stack --add-host=host.docker.internal:host-gateway -p 5001:5001 --env-file .env full-stack_backend
-```
-#### This will build and run the backend container, exposing the backendAPI on port 5001.
-
-`Backend API: http://localhost:5001`
-
-### To Verify the conncetion between backend and databse:
-```bash
-docker-compose logs -f
-```
-
-### Once the backend and frontend containers are running, you can access the application in your browser:
-
-`Frontend: http://localhost`
-
-
-You can now interact with the real-time chat app and start messaging!
 
 ---
 
+### 2️⃣ Build and Push Docker Images
 
+Build your images (replace Docker Hub username if different):
 
-### 🤝 Contributing
+```bash
+docker build -t imrannadaf/chatapp-frontend:latest ./frontend
+docker build -t imrannadaf/chatapp-backend:latest ./backend
+docker push imrannadaf/chatapp-frontend:latest
+docker push imrannadaf/chatapp-backend:latest
+```
 
+---
 
-We welcome contributions from DevOps & Developer of all skill levels! Here's how you can contribute:
+### 3️⃣ Deploy MongoDB, Backend, and Frontend to Kubernetes
 
-**Report bugs:** If you encounter any bugs or issues, please open an issue with detailed information.
-**Suggest features:** Have an idea for a new feature? Open an issue to discuss it with the community.
-**Submit pull requests:** If you have a fix or a feature you'd like to contribute, submit a pull request. Ensure your changes pass any linting or tests, if applicable.
+Apply all Kubernetes manifests from the `/k8s` directory:
 
-### 🌐 Join the Community
+```bash
+kubectl apply -f k8s/
+```
 
-We invite you to join our community of developers and contributors. Let's work together to build an amazing real-time chat application!
+---
 
-* **Star this repository** to show your support
-* **Fork this repository** to contribute to the project
-* **Open an issue** to report bugs or suggest features
-* **Submit a pull request** to contribute code changes
+### 4️⃣ Check Running Pods and Services
+
+```bash
+kubectl get pods -n chat-app
+kubectl get svc -n chat-app
+```
+
+✅ You should see:
+- `frontend` → ClusterIP :80  
+- `backend` → ClusterIP :5001  
+- `mongodb` → ClusterIP :27017  
+
+---
+
+## 🚪 Accessing the Application (Working Method)
+
+Since Ingress routing can vary across local environments, the **most stable way** to access the app is by **port-forwarding**:
+
+### 🔹 Step 1 — Forward Backend
+```bash
+kubectl port-forward service/backend -n chat-app 5001:5001
+```
+
+### 🔹 Step 2 — Forward Frontend
+Open a second terminal:
+```bash
+kubectl port-forward service/frontend -n chat-app 80:80
+```
+
+---
+
+### 🔹 Step 3 — Open the App
+Now open your browser and visit:
+
+👉 [http://localhost](http://localhost)
+
+✅ You can now:
+- Create a new account  
+- Sign in  
+- Send and receive messages  
+
+---
+
+## 🩺 Health Check
+
+You can verify your backend health anytime with:
+
+```bash
+curl http://localhost:5001/api/health
+```
+
+✅ Response example:
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "environment": "production"
+}
+```
+
+---
+
+## ⚠️ Troubleshooting
+
+| Problem | Cause | Solution |
+|----------|--------|-----------|
+| `Cannot GET //` | Ingress rewrite rule issue | Use port-forward (stable) |
+| Backend CrashLoopBackOff | Missing JWT Secret | Check secret `chatapp-secrets` |
+| “Internal Server Error” on signup | MongoDB connection issue | Verify DB connection string |
+| Frontend blank page | Ingress routing | Visit via port-forward instead |
+
+---
 
 ## 🔮 Future Plans
 
-
-This project is evolving, and here are a few exciting things on the horizon:
-
-* [ ] **CI/CD Pipelines:** Implement Continuous Integration and Continuous Deployment pipelines to automate testing and deployment.
-* [ ] **Kubernetes (K8s):** Add Kubernetes manifests for container orchestration to deploy the app on cloud platforms like AWS, GCP, or Azure.
-* [ ] **Feature Expansion:** Add more features like group chats, media sharing, and user status updates.
-* **Stay tuned for updates as we continue to improve and expand this project!**
+- [ ] Enable NGINX Ingress fully for external access  
+- [ ] Add persistent MongoDB storage (PVC)  
+- [ ] Setup CI/CD pipeline (GitHub Actions → Docker Hub → Minikube)  
+- [ ] Add Group Chat and File Sharing  
+- [ ] Deploy to AWS EKS / GKE  
 
 ---
 
-## 📚 Project Snapshots:
+## 📸 UI Snapshots
 
-![Settings](frontend/public/settings.png)
+| Login Page | Chat Window | Settings |
+|-------------|-------------|-----------|
+| ![Login](frontend/public/login.png) | ![Chat](frontend/public/chat.png) | ![Settings](frontend/public/settings.png) |
 
-![chat](frontend/public/chat.png)
-
-![logout](/frontend/public/logout.png)
-
-![Login](/frontend/public/login.png)
-
-
+---
 
 ## 📜 License
 
+This project is licensed under the **MIT License**.  
+Feel free to fork and modify it for learning or production use.
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+### ❤️ Maintained by [Imran Nadaf](https://github.com/imrannadaf)
